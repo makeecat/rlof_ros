@@ -18,7 +18,6 @@
     )
 
     include_directories(
-        src
         ${catkin_INCLUDE_DIRS}
     )
 
@@ -44,10 +43,3 @@
  else ()
      message(STATUS "No ROS versions found, doing nothing...")
  endif ()
-
- include_directories(
-         src
-         ${EIGEN3_INCLUDE_DIR}
-         ${Boost_INCLUDE_DIRS}
-         ${catkin_INCLUDE_DIRS}
- )

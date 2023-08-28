@@ -541,6 +541,12 @@ void calcOpticalFlowSparseRLOF(InputArray prevImg, InputArray nextImg,
     Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
     float forwardBackwardThreshold = 0);
 
+void calcOpticalFlowSparsePyrRLOF(InputArray prevImg, InputArray nextImg,
+    InputArray prevPts, InputOutputArray nextPts,
+    OutputArray status, OutputArray err,
+    Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
+    float forwardBackwardThreshold = 0);
+
 //! Additional interface to the Dense RLOF algorithm - optflow::calcOpticalFlowDenseRLOF()
 Ptr<DenseOpticalFlow> createOptFlow_DenseRLOF();
 

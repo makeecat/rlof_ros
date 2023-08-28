@@ -14,28 +14,44 @@
     catkin_package(
         CATKIN_DEPENDS cv_bridge
         INCLUDE_DIRS optflow/src optflow/include
-        LIBRARIES rlof_ros
+        LIBRARIES rlof_ros_lib
     )
 
     include_directories(
         ${catkin_INCLUDE_DIRS}
     )
-
+    # Set link libraries used by all binaries
+    list(APPEND thirdparty_libraries
+        # ${Boost_LIBRARIES}
+        ${OpenCV_LIBRARIES}
+        ${catkin_LIBRARIES}
+    )
     list(APPEND LIBRARY_SOURCES
         optflow/src/rlof/berlof_invoker.hpp
-        optflow/src/rlof/rlof_localflow.cpp
-        optflow/src/rlof/rlof_localflow.h
+        optflow/src/rlof/geo_interpolation.cpp
+        optflow/src/rlof/geo_interpolation.hpp
+        optflow/src/rlof/plk_invoker.hpp
         optflow/src/rlof/rlof_invoker.hpp
         optflow/src/rlof/rlof_invokerbase.hpp
-        optflow/src/rlof/geo_interpolation.cpp
         optflow/src/rlof/rlof_localflow.cpp
         optflow/src/rlof/rlof_localflow.h
+        optflow/src/rlofflow.cpp
     )
 
     # Declare a C++ library
-    add_library(${PROJECT_NAME} SHARED
+    add_library(rlof_ros_lib SHARED
         ${LIBRARY_SOURCES}
-        
+    )
+    target_link_libraries(rlof_ros_lib ${thirdparty_libraries})
+    target_include_directories(rlof_ros_lib PUBLIC optflow/src optflow/include)
+    install(TARGETS rlof_ros_lib
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    )
+    install(DIRECTORY optflow/src/ optflow/include/
+            DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+            FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
     )
  elseif (ament_cmake_FOUND)
     message(STATUS "ROS *2* version found")

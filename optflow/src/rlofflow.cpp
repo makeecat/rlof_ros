@@ -5,7 +5,6 @@
 #include <opencv2/video.hpp>
 #include <opencv2/imgproc.hpp>
 #include "opencv2/core/utility.hpp"
-#include "opencv2/core/private.hpp"
 #include "opencv2/core/ocl.hpp"
 #include <algorithm>
 #include <cmath>
@@ -477,6 +476,18 @@ void calcOpticalFlowSparseRLOF(InputArray prevImg, InputArray nextImg,
         rlofParam, forewardBackwardThreshold);
     algo->calc(prevImg, nextImg, prevPts, nextPts, status, err);
 }
+
+void calcOpticalFlowSparsePyrRLOF(InputArray prevImg, InputArray nextImg,
+    InputArray prevPts, InputOutputArray nextPts,
+    OutputArray status, OutputArray err,
+    Ptr<RLOFOpticalFlowParameter>  rlofParam,
+    float forewardBackwardThreshold)
+{
+    Ptr<SparseRLOFOpticalFlow> algo = SparseRLOFOpticalFlow::create(
+        rlofParam, forewardBackwardThreshold);
+    algo->calc(prevImg, nextImg, prevPts, nextPts, status, err);
+}
+
 Ptr<DenseOpticalFlow> createOptFlow_DenseRLOF()
 {
     return DenseRLOFOpticalFlow::create();

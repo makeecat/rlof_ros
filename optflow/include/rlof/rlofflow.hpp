@@ -157,52 +157,52 @@ public:
      *  @param val If true M-estimator is used. If false least-square estimator is used.
      *    @see setNormSigma0, setNormSigma1
     */
-    CV_WRAP void setUseMEstimator(bool val);
+    void setUseMEstimator(bool val);
 
-    CV_WRAP void setSolverType(SolverType val);
-    CV_WRAP SolverType getSolverType() const;
+    void setSolverType(SolverType val);
+    SolverType getSolverType() const;
 
-    CV_WRAP void setSupportRegionType(SupportRegionType val);
-    CV_WRAP SupportRegionType getSupportRegionType() const;
+    void setSupportRegionType(SupportRegionType val);
+    SupportRegionType getSupportRegionType() const;
 
-    CV_WRAP void setNormSigma0(float val);
-    CV_WRAP float getNormSigma0() const;
+    void setNormSigma0(float val);
+    float getNormSigma0() const;
 
-    CV_WRAP void setNormSigma1(float val);
-    CV_WRAP float getNormSigma1() const;
+    void setNormSigma1(float val);
+    float getNormSigma1() const;
 
-    CV_WRAP void setSmallWinSize(int val);
-    CV_WRAP int getSmallWinSize() const;
+    void setSmallWinSize(int val);
+    int getSmallWinSize() const;
 
-    CV_WRAP void setLargeWinSize(int val);
-    CV_WRAP int getLargeWinSize() const;
+    void setLargeWinSize(int val);
+    int getLargeWinSize() const;
 
-    CV_WRAP void setCrossSegmentationThreshold(int val);
-    CV_WRAP int getCrossSegmentationThreshold() const;
+    void setCrossSegmentationThreshold(int val);
+    int getCrossSegmentationThreshold() const;
 
-    CV_WRAP void setMaxLevel(int val);
-    CV_WRAP int getMaxLevel() const;
+    void setMaxLevel(int val);
+    int getMaxLevel() const;
 
-    CV_WRAP void setUseInitialFlow(bool val);
-    CV_WRAP bool getUseInitialFlow() const;
+    void setUseInitialFlow(bool val);
+    bool getUseInitialFlow() const;
 
-    CV_WRAP void setUseIlluminationModel(bool val);
-    CV_WRAP bool getUseIlluminationModel() const;
+    void setUseIlluminationModel(bool val);
+    bool getUseIlluminationModel() const;
 
-    CV_WRAP void setUseGlobalMotionPrior(bool val);
-    CV_WRAP bool getUseGlobalMotionPrior() const;
+    void setUseGlobalMotionPrior(bool val);
+    bool getUseGlobalMotionPrior() const;
 
-    CV_WRAP void setMaxIteration(int val);
-    CV_WRAP int getMaxIteration() const;
+    void setMaxIteration(int val);
+    int getMaxIteration() const;
 
-    CV_WRAP void setMinEigenValue(float val);
-    CV_WRAP float getMinEigenValue() const;
+    void setMinEigenValue(float val);
+    float getMinEigenValue() const;
 
-    CV_WRAP void setGlobalMotionRansacThreshold(float val);
-    CV_WRAP float getGlobalMotionRansacThreshold() const;
+    void setGlobalMotionRansacThreshold(float val);
+    float getGlobalMotionRansacThreshold() const;
 
     //! @brief Creates instance of optflow::RLOFOpticalFlowParameter
-    CV_WRAP static Ptr<RLOFOpticalFlowParameter> create();
+    static Ptr<RLOFOpticalFlowParameter> create();
 };
 
 /** @brief Fast dense optical flow computation based on robust local optical flow (RLOF) algorithms and sparse-to-dense interpolation
@@ -237,11 +237,11 @@ public:
     /**
         @see optflow::RLOFOpticalFlowParameter, getRLOFOpticalFlowParameter
     */
-    CV_WRAP virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter>  val) = 0;
+    virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter>  val) = 0;
     /** @copybrief setRLOFOpticalFlowParameter
         @see optflow::RLOFOpticalFlowParameter, setRLOFOpticalFlowParameter
     */
-    CV_WRAP virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const = 0;
+    virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const = 0;
     //! @brief Threshold for the forward backward confidence check
     /**For each grid point \f$ \mathbf{x} \f$ a motion vector \f$ d_{I0,I1}(\mathbf{x}) \f$ is computed.
      *     If the forward backward error \f[ EP_{FB} = || d_{I0,I1} + d_{I1,I0} || \f]
@@ -250,21 +250,21 @@ public:
      *    will only be applied if the threshold > 0. This may results into a doubled runtime for the motion estimation.
      *    @see getForwardBackward, setGridStep
     */
-    CV_WRAP virtual void setForwardBackward(float val) = 0;
+    virtual void setForwardBackward(float val) = 0;
     /** @copybrief setForwardBackward
         @see setForwardBackward
     */
-    CV_WRAP virtual float getForwardBackward() const = 0;
+    virtual float getForwardBackward() const = 0;
     //! @brief Size of the grid to spawn the motion vectors.
     /** For each grid point a motion vector is computed. Some motion vectors will be removed due to the forwatd backward
      *  threshold (if set >0). The rest will be the base of the vector field interpolation.
      *    @see getForwardBackward, setGridStep
     */
-    CV_WRAP virtual Size getGridStep() const = 0;
+    virtual Size getGridStep() const = 0;
     /** @copybrief getGridStep
      *    @see getGridStep
      */
-    CV_WRAP virtual void setGridStep(Size val) = 0;
+    virtual void setGridStep(Size val) = 0;
 
     //! @brief Interpolation used to compute the dense optical flow.
     /** Two interpolation algorithms are supported
@@ -272,98 +272,98 @@ public:
      * - **INTERP_EPIC_RESIDUAL** applies the edge-preserving interpolation, see @cite Revaud2015,Geistert2016.
      * @see ximgproc::EdgeAwareInterpolator, getInterpolation
     */
-    CV_WRAP virtual void setInterpolation(InterpolationType val) = 0;
+    virtual void setInterpolation(InterpolationType val) = 0;
     /** @copybrief setInterpolation
      *    @see ximgproc::EdgeAwareInterpolator, setInterpolation
      */
-    CV_WRAP virtual InterpolationType getInterpolation() const = 0;
+    virtual InterpolationType getInterpolation() const = 0;
     //! @brief see ximgproc::EdgeAwareInterpolator() K value.
     /** K is a number of nearest-neighbor matches considered, when fitting a locally affine
      *    model. Usually it should be around 128. However, lower values would make the interpolation noticeably faster.
      *    @see ximgproc::EdgeAwareInterpolator,  setEPICK
     */
-    CV_WRAP virtual int getEPICK() const = 0;
+    virtual int getEPICK() const = 0;
     /** @copybrief getEPICK
      *    @see ximgproc::EdgeAwareInterpolator, getEPICK
      */
-    CV_WRAP virtual void setEPICK(int val) = 0;
+    virtual void setEPICK(int val) = 0;
     //! @brief see ximgproc::EdgeAwareInterpolator() sigma value.
     /** Sigma is a parameter defining how fast the weights decrease in the locally-weighted affine
      *  fitting. Higher values can help preserve fine details, lower values can help to get rid of noise in the
      *  output flow.
      *    @see ximgproc::EdgeAwareInterpolator, setEPICSigma
     */
-    CV_WRAP virtual float getEPICSigma() const = 0;
+    virtual float getEPICSigma() const = 0;
     /** @copybrief getEPICSigma
      *  @see ximgproc::EdgeAwareInterpolator, getEPICSigma
      */
-    CV_WRAP virtual void setEPICSigma(float val) = 0;
+    virtual void setEPICSigma(float val) = 0;
     //! @brief  see ximgproc::EdgeAwareInterpolator() lambda value.
     /** Lambda is a parameter defining the weight of the edge-aware term in geodesic distance,
      *    should be in the range of 0 to 1000.
      *    @see ximgproc::EdgeAwareInterpolator, setEPICSigma
     */
-    CV_WRAP virtual float getEPICLambda() const = 0;
+    virtual float getEPICLambda() const = 0;
     /** @copybrief getEPICLambda
      *    @see ximgproc::EdgeAwareInterpolator, getEPICLambda
     */
-    CV_WRAP virtual void setEPICLambda(float val) = 0;
+    virtual void setEPICLambda(float val) = 0;
     //! @brief see ximgproc::EdgeAwareInterpolator().
     /** Sets the respective fastGlobalSmootherFilter() parameter.
      *    @see ximgproc::EdgeAwareInterpolator, setFgsLambda
     */
-    CV_WRAP virtual float getFgsLambda() const = 0;
+    virtual float getFgsLambda() const = 0;
     /** @copybrief getFgsLambda
      *    @see ximgproc::EdgeAwareInterpolator, ximgproc::fastGlobalSmootherFilter, getFgsLambda
     */
-    CV_WRAP virtual void setFgsLambda(float val) = 0;
+    virtual void setFgsLambda(float val) = 0;
     //! @brief see ximgproc::EdgeAwareInterpolator().
     /** Sets the respective fastGlobalSmootherFilter() parameter.
      *    @see ximgproc::EdgeAwareInterpolator, ximgproc::fastGlobalSmootherFilter, setFgsSigma
     */
-    CV_WRAP virtual float getFgsSigma() const = 0;
+    virtual float getFgsSigma() const = 0;
     /** @copybrief getFgsSigma
      *    @see ximgproc::EdgeAwareInterpolator, ximgproc::fastGlobalSmootherFilter, getFgsSigma
      */
-    CV_WRAP virtual void setFgsSigma(float val) = 0;
+    virtual void setFgsSigma(float val) = 0;
     //! @brief enables ximgproc::fastGlobalSmootherFilter
     /**
      * @see getUsePostProc
      */
-    CV_WRAP virtual void setUsePostProc(bool val) = 0;
+    virtual void setUsePostProc(bool val) = 0;
     /** @copybrief setUsePostProc
      *    @see ximgproc::fastGlobalSmootherFilter, setUsePostProc
      */
-    CV_WRAP virtual bool getUsePostProc() const = 0;
+    virtual bool getUsePostProc() const = 0;
     //! @brief enables VariationalRefinement
     /**
      * @see getUseVariationalRefinement
      */
-    CV_WRAP virtual void setUseVariationalRefinement(bool val) = 0;
+    virtual void setUseVariationalRefinement(bool val) = 0;
     /** @copybrief setUseVariationalRefinement
      *    @see ximgproc::fastGlobalSmootherFilter, setUsePostProc
      */
-    CV_WRAP virtual bool getUseVariationalRefinement() const = 0;
+    virtual bool getUseVariationalRefinement() const = 0;
     //! @brief Parameter to tune the approximate size of the superpixel used for oversegmentation.
     /**
      * @see cv::ximgproc::createSuperpixelSLIC, cv::ximgproc::RICInterpolator
      */
-    CV_WRAP virtual void setRICSPSize(int val) = 0;
+    virtual void setRICSPSize(int val) = 0;
     /** @copybrief setRICSPSize
     *    @see setRICSPSize
     */
-    CV_WRAP virtual int  getRICSPSize() const = 0;
+    virtual int  getRICSPSize() const = 0;
     /** @brief Parameter to choose superpixel algorithm variant to use:
      * - cv::ximgproc::SLICType SLIC segments image using a desired region_size (value: 100)
      * - cv::ximgproc::SLICType SLICO will optimize using adaptive compactness factor (value: 101)
      * - cv::ximgproc::SLICType MSLIC will optimize using manifold methods resulting in more content-sensitive superpixels (value: 102).
      *  @see cv::ximgproc::createSuperpixelSLIC, cv::ximgproc::RICInterpolator
     */
-    CV_WRAP virtual void setRICSLICType(int val) = 0;
+    virtual void setRICSLICType(int val) = 0;
     /** @copybrief setRICSLICType
      *    @see setRICSLICType
      */
-    CV_WRAP virtual int  getRICSLICType() const = 0;
+    virtual int  getRICSLICType() const = 0;
     //! @brief Creates instance of optflow::DenseRLOFOpticalFlow
     /**
      *    @param rlofParam see optflow::RLOFOpticalFlowParameter
@@ -380,7 +380,7 @@ public:
      *    @param fgsSigma see setFgsSigma
      *    @param use_variational_refinement see setUseVariationalRefinement
     */
-    CV_WRAP static Ptr<DenseRLOFOpticalFlow> create(
+    static Ptr<DenseRLOFOpticalFlow> create(
         Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
         float forwardBackwardThreshold = 1.f,
         Size gridStep = Size(6, 6),
@@ -414,11 +414,11 @@ class SparseRLOFOpticalFlow : public SparseOpticalFlow
 public:
     /** @copydoc DenseRLOFOpticalFlow::setRLOFOpticalFlowParameter
     */
-    CV_WRAP virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter> val) = 0;
+    virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter> val) = 0;
     /** @copybrief setRLOFOpticalFlowParameter
      *    @see setRLOFOpticalFlowParameter
     */
-    CV_WRAP virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const = 0;
+    virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const = 0;
     //! @brief Threshold for the forward backward confidence check
     /** For each feature point a motion vector \f$ d_{I0,I1}(\mathbf{x}) \f$ is computed.
      *     If the forward backward error \f[ EP_{FB} = || d_{I0,I1} + d_{I1,I0} || \f]
@@ -427,18 +427,18 @@ public:
      *    will only be applied if the threshold > 0. This may results into a doubled runtime for the motion estimation.
      *    @see setForwardBackward
     */
-    CV_WRAP virtual void setForwardBackward(float val) = 0;
+    virtual void setForwardBackward(float val) = 0;
     /** @copybrief setForwardBackward
      *    @see setForwardBackward
     */
-    CV_WRAP virtual float getForwardBackward() const = 0;
+    virtual float getForwardBackward() const = 0;
 
     //! @brief Creates instance of SparseRLOFOpticalFlow
     /**
      *    @param rlofParam see setRLOFOpticalFlowParameter
      *    @param forwardBackwardThreshold see setForwardBackward
     */
-    CV_WRAP static Ptr<SparseRLOFOpticalFlow> create(
+    static Ptr<SparseRLOFOpticalFlow> create(
         Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
         float forwardBackwardThreshold = 1.f);
 

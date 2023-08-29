@@ -440,11 +440,141 @@ protected:
     Ptr<CImageBuffer>    currPyramid[2];
 };
 
+class SparsePyrRLOFOpticalFlowImpl : public SparsePyrRLOFOpticalFlow
+{
+    public:
+    SparsePyrRLOFOpticalFlowImpl()
+        : param(Ptr<RLOFOpticalFlowParameter>(new RLOFOpticalFlowParameter))
+        , forwardBackwardThreshold(1.f)
+    {
+        prevPyramid[0] = cv::Ptr< CImageBuffer>(new CImageBuffer);
+        prevPyramid[1] = cv::Ptr< CImageBuffer>(new CImageBuffer);
+        currPyramid[0] = cv::Ptr< CImageBuffer>(new CImageBuffer);
+        currPyramid[1] = cv::Ptr< CImageBuffer>(new CImageBuffer);
+    }
+    virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter>  val) CV_OVERRIDE { param = val; }
+    virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const CV_OVERRIDE { return param; }
+
+    virtual float getForwardBackward()  const CV_OVERRIDE { return forwardBackwardThreshold; }
+    virtual void setForwardBackward(float val) CV_OVERRIDE { forwardBackwardThreshold = val; }
+
+    virtual void calc(
+        InputArray m_prevPyramids, InputArray m_currPyramids,
+        InputArray prevPts, InputOutputArray nextPts,
+        OutputArray status,
+        OutputArray err) 
+    {
+        m_prevPyramids.getMatVector(prevPyramid[0]->m_ImagePyramid);
+        m_currPyramids.getMatVector(currPyramid[0]->m_ImagePyramid);
+        prevPyramid[0]->m_maxLevel = param->maxLevel;
+        currPyramid[0]->m_maxLevel = param->maxLevel;
+        
+        if (param.empty())
+        {
+            param = makePtr<RLOFOpticalFlowParameter>();
+        }
+        CV_DbgAssert(!param.empty());
+
+        // if (param->supportRegionType == SR_CROSS)
+        // {
+        //     CV_CheckChannelsEQ(prevImg.channels(), 3, "SR_CROSS mode requires images with 3 channels");
+        //     CV_CheckChannelsEQ(nextImg.channels(), 3, "SR_CROSS mode requires images with 3 channels");
+        // }
+
+        // Mat prevImage = prevImg.getMat();
+        // Mat nextImage = nextImg.getMat();
+        Mat prevImage;
+        Mat nextImage;
+        Mat prevPtsMat = prevPts.getMat();
+
+        if (param->useInitialFlow == false)
+            nextPts.create(prevPtsMat.size(), prevPtsMat.type(), -1, true);
+
+        int npoints = 0;
+        CV_Assert((npoints = prevPtsMat.checkVector(2, CV_32F, true)) >= 0);
+        if (npoints == 0)
+        {
+            nextPts.release();
+            status.release();
+            err.release();
+            return;
+        }
+        Mat nextPtsMat = nextPts.getMat();
+        CV_Assert(nextPtsMat.checkVector(2, CV_32F, true) == npoints);
+
+        std::vector<cv::Point2f> prevPoints(npoints), nextPoints(npoints), refPoints;
+
+        if (prevPtsMat.channels() != 2)
+            prevPtsMat = prevPtsMat.reshape(2, npoints);
+
+        prevPtsMat.copyTo(prevPoints);
+
+        if (param->useInitialFlow )
+        {
+            if (nextPtsMat.channels() != 2)
+                nextPtsMat = nextPtsMat.reshape(2, npoints);
+            nextPtsMat.copyTo(nextPoints);
+        }
+        cv::Mat statusMat;
+        cv::Mat errorMat;
+        if (status.needed() || forwardBackwardThreshold > 0)
+        {
+            status.create((int)npoints, 1, CV_8U, -1, true);
+            statusMat = status.getMat();
+            statusMat.setTo(1);
+        }
+
+        if (err.needed() || forwardBackwardThreshold > 0)
+        {
+            err.create((int)npoints, 1, CV_32F, -1, true);
+            errorMat = err.getMat();
+            errorMat.setTo(0);
+        }
+
+        calcLocalOpticalFlow(prevImage, nextImage, prevPyramid, currPyramid, prevPoints, nextPoints, *(param.get()));
+        cv::Mat(1,npoints , CV_32FC2, &nextPoints[0]).copyTo(nextPtsMat);
+        if (forwardBackwardThreshold > 0)
+        {
+            // use temp variable to properly initialize refPoints
+            // inside 'calcLocalOpticalFlow' when 'use_init_flow' and 'fwd_bwd_thresh' parameters are used
+            bool temp_param = param->getUseInitialFlow();
+            param->setUseInitialFlow(false);
+            // reuse image pyramids
+            calcLocalOpticalFlow(nextImage, prevImage, currPyramid, prevPyramid, nextPoints, refPoints, *(param.get()));
+            param->setUseInitialFlow(temp_param);
+        }
+        for (unsigned int r = 0; r < refPoints.size(); r++)
+        {
+            Point2f diff = refPoints[r] - prevPoints[r];
+            errorMat.at<float>(r) = sqrt(diff.x * diff.x + diff.y * diff.y);
+            if (errorMat.at<float>(r) > forwardBackwardThreshold)
+                statusMat.at<uchar>(r) = 0;
+        }
+
+    }
+
+protected:
+    Ptr<RLOFOpticalFlowParameter> param;
+    float                forwardBackwardThreshold;
+    Ptr<CImageBuffer>    prevPyramid[2];
+    Ptr<CImageBuffer>    currPyramid[2];
+};
+
 Ptr<SparseRLOFOpticalFlow> SparseRLOFOpticalFlow::create(
     Ptr<RLOFOpticalFlowParameter>  rlofParam,
     float forwardBackwardThreshold)
 {
     Ptr<SparseRLOFOpticalFlow> algo = makePtr<SparseRLOFOpticalFlowImpl>();
+    algo->setRLOFOpticalFlowParameter(rlofParam);
+    algo->setForwardBackward(forwardBackwardThreshold);
+    return algo;
+}
+
+Ptr<SparsePyrRLOFOpticalFlow> SparsePyrRLOFOpticalFlow::create(
+    Ptr<RLOFOpticalFlowParameter>  rlofParam,
+    float forwardBackwardThreshold)
+{
+    Ptr<SparsePyrRLOFOpticalFlow> algo = makePtr<SparsePyrRLOFOpticalFlowImpl>();
     algo->setRLOFOpticalFlowParameter(rlofParam);
     algo->setForwardBackward(forwardBackwardThreshold);
     return algo;
@@ -483,11 +613,20 @@ void calcOpticalFlowSparsePyrRLOF(InputArray prevImg, InputArray nextImg,
     Ptr<RLOFOpticalFlowParameter>  rlofParam,
     float forewardBackwardThreshold)
 {
-    Ptr<SparseRLOFOpticalFlow> algo = SparseRLOFOpticalFlow::create(
+    Ptr<SparsePyrRLOFOpticalFlow> algo = SparsePyrRLOFOpticalFlow::create(
         rlofParam, forewardBackwardThreshold);
     algo->calc(prevImg, nextImg, prevPts, nextPts, status, err);
 }
 
+void buildOpticalFlowSparsePyrRLOF(InputArray _img, OutputArrayOfArrays pyramid, Size winSize, int maxLevel, bool useAdditionalRGB)
+{
+    int _maxLevel = -1;
+    float levelScale[2] = { 2.f,2.f };
+    if (useAdditionalRGB)
+        _maxLevel = buildOpticalFlowPyramidScale(_img, pyramid, winSize, maxLevel, false, 4, 0, true, levelScale);
+    else
+        _maxLevel = buildOpticalFlowPyramidScale(_img, pyramid, winSize, maxLevel, false, 4, 0, true, levelScale);   
+}
 Ptr<DenseOpticalFlow> createOptFlow_DenseRLOF()
 {
     return DenseRLOFOpticalFlow::create();

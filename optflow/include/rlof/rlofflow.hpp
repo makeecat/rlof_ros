@@ -6,7 +6,6 @@
 
 #include "opencv2/core.hpp"
 #include "opencv2/video.hpp"
-
 namespace cv
 {
 namespace optflow
@@ -444,6 +443,54 @@ public:
 
 };
 
+/** @brief Class used for calculation sparse pyramid optical flow and feature tracking with robust local optical flow (RLOF) algorithms.
+*
+* The RLOF is a fast local optical flow approach described in @cite Senst2012 @cite Senst2013 @cite Senst2014
+ * and @cite Senst2016 similar to the pyramidal iterative Lucas-Kanade method as
+* proposed by @cite Bouguet00. More details and experiments can be found in the following thesis @cite Senst2019.
+* The implementation is derived from optflow::calcOpticalFlowPyrLK().
+*
+* For the RLOF configuration see optflow::RLOFOpticalFlowParameter for further details.
+* Parameters have been described in @cite Senst2012, @cite Senst2013, @cite Senst2014 and @cite Senst2016.
+*
+* @note SIMD parallelization is only available when compiling with SSE4.1.
+* @see optflow::calcOpticalFlowSparseRLOF(), optflow::RLOFOpticalFlowParameter
+*/
+class SparsePyrRLOFOpticalFlow : public SparseOpticalFlow
+{
+public:
+    /** @copydoc DenseRLOFOpticalFlow::setRLOFOpticalFlowParameter
+    */
+    virtual void setRLOFOpticalFlowParameter(Ptr<RLOFOpticalFlowParameter> val) = 0;
+    /** @copybrief setRLOFOpticalFlowParameter
+     *    @see setRLOFOpticalFlowParameter
+    */
+    virtual Ptr<RLOFOpticalFlowParameter>  getRLOFOpticalFlowParameter() const = 0;
+    //! @brief Threshold for the forward backward confidence check
+    /** For each feature point a motion vector \f$ d_{I0,I1}(\mathbf{x}) \f$ is computed.
+     *     If the forward backward error \f[ EP_{FB} = || d_{I0,I1} + d_{I1,I0} || \f]
+     *     is larger than threshold given by this function then the status  will not be used by the following
+     *    vector field interpolation. \f$ d_{I1,I0} \f$ denotes the backward flow. Note, the forward backward test
+     *    will only be applied if the threshold > 0. This may results into a doubled runtime for the motion estimation.
+     *    @see setForwardBackward
+    */
+    virtual void setForwardBackward(float val) = 0;
+    /** @copybrief setForwardBackward
+     *    @see setForwardBackward
+    */
+    virtual float getForwardBackward() const = 0;
+
+    //! @brief Creates instance of SparsePyrRLOFOpticalFlow
+    /**
+     *    @param rlofParam see setRLOFOpticalFlowParameter
+     *    @param forwardBackwardThreshold see setForwardBackward
+    */
+    static Ptr<SparsePyrRLOFOpticalFlow> create(
+        Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
+        float forwardBackwardThreshold = 1.f);
+
+};
+
 /** @brief Fast dense optical flow computation based on robust local optical flow (RLOF) algorithms and sparse-to-dense interpolation scheme.
  *
  * The RLOF is a fast local optical flow approach described in @cite Senst2012 @cite Senst2013 @cite Senst2014
@@ -547,6 +594,10 @@ void calcOpticalFlowSparsePyrRLOF(InputArray prevImg, InputArray nextImg,
     Ptr<RLOFOpticalFlowParameter> rlofParam = Ptr<RLOFOpticalFlowParameter>(),
     float forwardBackwardThreshold = 0);
 
+int buildOpticalFlowPyramidScale(InputArray _img, OutputArrayOfArrays pyramid, Size winSize, int maxLevel, bool withDerivatives,
+    int pyrBorder, int derivBorder, bool tryReuseInputImage, float levelScale[2]);
+
+void buildOpticalFlowSparsePyrRLOF(InputArray _img, OutputArrayOfArrays pyramid, Size winSize, int maxLevel, bool useAdditionalRGB);
 //! Additional interface to the Dense RLOF algorithm - optflow::calcOpticalFlowDenseRLOF()
 Ptr<DenseOpticalFlow> createOptFlow_DenseRLOF();
 

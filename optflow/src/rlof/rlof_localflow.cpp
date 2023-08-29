@@ -261,7 +261,7 @@ std::vector<float> get_norm(float sigma0, float sigma1)
     return result;
 }
 
-static
+// static
 int buildOpticalFlowPyramidScale(InputArray _img, OutputArrayOfArrays pyramid, Size winSize, int maxLevel, bool withDerivatives,
     int pyrBorder, int derivBorder, bool tryReuseInputImage, float levelScale[2])
 {
@@ -705,6 +705,11 @@ void calcLocalOpticalFlow(
             prevPyramids[0]->setImage(prevImage);
             currPyramids[0]->setImage(currImage);
         }
+    } else {
+        prevPyramids[0]->m_Overwrite = false;
+        currPyramids[0]->m_Overwrite = false;
+        prevPyramids[1]->m_Overwrite = false;
+        currPyramids[1]->m_Overwrite = false;
     }
     preprocess(prevPyramids, currPyramids, prevPoints, currPoints, param);
     RLOFOpticalFlowParameter internParam = param;

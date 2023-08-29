@@ -8,7 +8,7 @@
 #include <float.h>
 #include <stdio.h>
 #include "opencv2/imgproc.hpp"
-#include "opencv2/optflow/rlofflow.hpp"
+#include "rlof/rlofflow.hpp"
 //! Fast median estimation method based on @cite Tibshirani2008. This implementation relates to http://www.stat.cmu.edu/~ryantibs/median/
 using namespace cv;
 template<typename T>

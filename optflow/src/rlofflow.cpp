@@ -623,6 +623,7 @@ void buildOpticalFlowSparsePyrRLOF(InputArray _img, OutputArrayOfArrays pyramid,
     int _maxLevel = -1;
     float levelScale[2] = { 2.f,2.f };
     if (useAdditionalRGB)
+    // TODO: implement RGB pyramid
         _maxLevel = buildOpticalFlowPyramidScale(_img, pyramid, winSize, maxLevel, false, 4, 0, true, levelScale);
     else
         _maxLevel = buildOpticalFlowPyramidScale(_img, pyramid, winSize, maxLevel, false, 4, 0, true, levelScale);   

@@ -229,6 +229,7 @@ public:
  * @note Note that in output, if no correspondences are found between \a I0 and \a I1, the \a flow is set to 0.
  * @see optflow::calcOpticalFlowDenseRLOF(), optflow::RLOFOpticalFlowParameter
 */
+#if 0
 class DenseRLOFOpticalFlow : public DenseOpticalFlow
 {
 public:
@@ -394,7 +395,7 @@ public:
         float fgsSigma = 1.5f,
         bool use_variational_refinement = false);
 };
-
+#endif
 /** @brief Class used for calculation sparse optical flow and feature tracking with robust local optical flow (RLOF) algorithms.
 *
 * The RLOF is a fast local optical flow approach described in @cite Senst2012 @cite Senst2013 @cite Senst2014

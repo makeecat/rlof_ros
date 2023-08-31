@@ -11,8 +11,9 @@
 
 #include "rlof/rlof_localflow.h"
 #include "rlof/geo_interpolation.hpp"
+#if 0
 #include "opencv2/ximgproc.hpp"
-
+#endif
 
 namespace cv {
 namespace optflow {
@@ -76,7 +77,7 @@ float RLOFOpticalFlowParameter::getMinEigenValue() const { return minEigenValue;
 
 void RLOFOpticalFlowParameter::setGlobalMotionRansacThreshold(float val){ globalMotionRansacThreshold = val;}
 float RLOFOpticalFlowParameter::getGlobalMotionRansacThreshold() const { return globalMotionRansacThreshold;}
-
+#if 0
 class DenseOpticalFlowRLOFImpl : public DenseRLOFOpticalFlow
 {
 public:
@@ -289,7 +290,7 @@ protected:
     bool                          use_post_proc;
     bool                          use_variational_refinement;
     int                           sp_size;
-    ximgproc::SLICType            slic_type;
+//    ximgproc::SLICType            slic_type;
 };
 
 Ptr<DenseRLOFOpticalFlow> DenseRLOFOpticalFlow::create(
@@ -323,7 +324,7 @@ Ptr<DenseRLOFOpticalFlow> DenseRLOFOpticalFlow::create(
     algo->setUseVariationalRefinement(use_variational_refinement);
     return algo;
 }
-
+#endif
 class SparseRLOFOpticalFlowImpl : public SparseRLOFOpticalFlow
 {
     public:
@@ -579,7 +580,7 @@ Ptr<SparsePyrRLOFOpticalFlow> SparsePyrRLOFOpticalFlow::create(
     algo->setForwardBackward(forwardBackwardThreshold);
     return algo;
 }
-
+#if 0
 void calcOpticalFlowDenseRLOF(InputArray I0, InputArray I1, InputOutputArray flow,
     Ptr<RLOFOpticalFlowParameter>  rlofParam ,
     float forewardBackwardThreshold, Size gridStep,
@@ -595,7 +596,7 @@ void calcOpticalFlowDenseRLOF(InputArray I0, InputArray I1, InputOutputArray flo
     algo->calc(I0, I1, flow);
     algo->collectGarbage();
 }
-
+#endif
 void calcOpticalFlowSparseRLOF(InputArray prevImg, InputArray nextImg,
     InputArray prevPts, InputOutputArray nextPts,
     OutputArray status, OutputArray err,
@@ -628,11 +629,12 @@ void buildOpticalFlowSparsePyrRLOF(InputArray _img, OutputArrayOfArrays pyramid,
     else
         _maxLevel = buildOpticalFlowPyramidScale(_img, pyramid, winSize, maxLevel, false, 4, 0, true, levelScale);   
 }
+/*
 Ptr<DenseOpticalFlow> createOptFlow_DenseRLOF()
 {
     return DenseRLOFOpticalFlow::create();
 }
-
+*/
 Ptr<SparseOpticalFlow> createOptFlow_SparseRLOF()
 {
     return SparseRLOFOpticalFlow::create();
